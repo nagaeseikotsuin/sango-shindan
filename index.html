@@ -748,7 +748,10 @@
   var CLINIC_NAME  = "ながえ整骨院";            // 院名
   var CLINIC_PHONE = "";                          // 電話番号（任意）例: "047-123-4567"
   var CLINIC_INTRO = "";                          // 院の紹介文（任意・1〜2行推奨）
-  var LINE_URL     = "https://lin.ee/jC7sbH0";    // LINE公式アカウントのURL
+  var LINE_URL     = "https://lin.ee/jC7sbH0";    // LINE公式アカウントのURL（友だち追加用）
+  var LINE_OA_ID   = "@nagaeseikotsuin";           // LINE公式アカウントの「ベーシックID」(@から始まるID・任意)
+                                                   // 設定すると、診断結果がLINEのメッセージ欄に自動で入力された状態でチャットが開きます
+                                                   // 確認方法: LINE公式アカウントマネージャー →設定→アカウント設定→ベーシックID
   // ============================================================
 
   function clinicDisplayName(){
@@ -1255,8 +1258,7 @@
     return lines.join("\n");
   }
 
-  function copyResult(){
-    var text = buildResultText();
+  function writeToClipboard(text){
     var ok = false;
     try{
       if(navigator.clipboard && navigator.clipboard.writeText){
@@ -1276,14 +1278,39 @@
       area.style.position = "absolute";
       area.style.left = "-9999px";
     }
+  }
+
+  function copyResult(){
+    writeToClipboard(buildResultText());
     showToast("結果をコピーしました");
   }
 
+  // LINE公式アカウントのチャット欄に診断結果を自動入力するURL（友だち追加前でも追加後でも同じリンクで開けます）
+  // LINE_OA_ID が未設定の場合は null を返し、通常の友だち追加リンクにフォールバックします
+  function buildLineMessageUrl(text){
+    if(!LINE_OA_ID || !LINE_OA_ID.trim()) return null;
+    var id = LINE_OA_ID.trim();
+    if(id.charAt(0) !== "@") id = "@" + id;
+    return "https://line.me/R/oaMessage/" + id + "/?" + encodeURIComponent(text);
+  }
+
   function onLineClick(e){
-    if(!LINE_URL){
-      e.preventDefault();
-      showToast("ここにLINEのURLを設定します");
+    e.preventDefault();
+    var text = buildResultText();
+    writeToClipboard(text);
+
+    var msgUrl = buildLineMessageUrl(text);
+    if(msgUrl){
+      window.open(msgUrl, "_blank");
+      showToast("結果をコピーしました。自動入力されない場合は貼り付けてください");
+      return;
     }
+    if(LINE_URL){
+      window.open(LINE_URL, "_blank");
+      showToast("結果をコピーしました。LINEを開いたら貼り付けてください");
+      return;
+    }
+    showToast("ここにLINEのURLを設定します");
   }
 
   function renderClinicIntro(){
