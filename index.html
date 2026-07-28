@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>産後の不調診断</title>
+<style>
+  :root{
+    --bg:#fffaf9;
+    --card:#ffffff;
+    --accent:#ff96a8;
+    --accent-dark:#e8748f;
+    --accent-soft:#ffe3e9;
+    --sub:#fff1f4;
+    --mint:#e3f7ee;
+    --mint-dark:#4fae82;
+    --text:#4a4045;
+    --text-light:#8a7d81;
+    --line-green:#06c755;
+    --shadow:0 8px 24px rgba(232,116,143,0.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    padding-bottom:40px;
+  }
+  .screen{display:none; animation:fadeIn .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  header.topbar{
+    display:flex;
+    align-items:center;
+    padding:14px 16px;
+    min-height:26px;
+  }
+  .back-btn{
+    background:none;
+    border:none;
+    color:var(--text-light);
+    font-size:14px;
+    padding:6px 8px;
+    cursor:pointer;
+    border-radius:8px;
+  }
+  .back-btn:active{background:var(--sub);}
+
+  .content{padding:8px 22px 24px;}
+  #screen-result .content{padding-bottom:100px;}
+
+  h1.appTitle{
+    font-size:22px;
+    text-align:center;
+    color:var(--accent-dark);
+    margin:6px 0 4px;
+    letter-spacing:.02em;
+  }
+  .lead{
+    text-align:center;
+    color:var(--text-light);
+    font-size:14px;
+    line-height:1.8;
+    margin:8px 0 26px;
+  }
+  .heroIcon{
+    text-align:center;
+    font-size:56px;
+    margin:18px 0 6px;
+  }
+  .clinicIntro{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--text-light);
+    line-height:1.7;
+    margin:2px 0 20px;
+  }
+  .clinicIntro .clinicName{
+    color:var(--accent-dark);
+    font-weight:bold;
+  }
+  .clinicIntro a{color:var(--accent-dark);}
+  .printHeader{display:none;}
+  .badgeRow{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:22px;
+  }
+  .badge{
+    background:var(--sub);
+    color:var(--accent-dark);
+    font-size:12px;
+    padding:6px 12px;
+    border-radius:20px;
+    font-weight:bold;
+  }
+  .primaryBtn{
+    display:block;
+    width:100%;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    font-size:17px;
+    font-weight:bold;
+    padding:16px 0;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    cursor:pointer;
+    letter-spacing:.05em;
+  }
+  .primaryBtn:active{background:var(--accent-dark);}
+  .secondaryBtn{
+    display:block;
+    width:100%;
+    background:#fff;
+    color:var(--accent-dark);
+    border:2px solid var(--accent-soft);
+    font-size:15px;
+    font-weight:bold;
+    padding:13px 0;
+    border-radius:16px;
+    cursor:pointer;
+    margin-top:12px;
+  }
+  .disclaimer{
+    font-size:11px;
+    color:var(--text-light);
+    text-align:center;
+    line-height:1.7;
+    margin-top:30px;
+  }
+
+  h2.stepTitle{
+    font-size:19px;
+    text-align:center;
+    margin:4px 0 6px;
+    color:var(--text);
+  }
+  .stepSub{
+    text-align:center;
+    font-size:13px;
+    color:var(--text-light);
+    margin-bottom:20px;
+  }
+  .stepSub b{color:var(--accent-dark);}
+
+  .concernGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .concernBtn{
+    background:#fff;
+    border:2px solid var(--accent-soft);
+    border-radius:14px;
+    padding:16px 8px;
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--text);
+    cursor:pointer;
+    text-align:center;
+    min-height:78px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .concernBtn.selected{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:bold;
+  }
+
+  .ageBox{
+    background:#fff;
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:30px 20px;
+    text-align:center;
+    margin-bottom:20px;
+  }
+  .ageDisplay{
+    font-size:46px;
+    font-weight:bold;
+    color:var(--accent-dark);
+    margin:10px 0;
+  }
+  .ageDisplay span{font-size:20px; font-weight:normal; margin-left:4px;}
+  .ageAdjust{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:26px;
+    margin:14px 0 6px;
+  }
+  .roundBtn{
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:none;
+    background:var(--sub);
+    color:var(--accent-dark);
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .roundBtn:active{background:var(--accent-soft);}
+  .decadeRow{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .decadeBtn{
+    background:#fff;
+    border:1.5px solid var(--accent-soft);
+    color:var(--accent-dark);
+    padding:8px 12px;
+    border-radius:20px;
+    font-size:13px;
+    cursor:pointer;
+  }
+  .decadeBtn.active{
+    background:var(--accent-dark);
+    border-color:var(--accent-dark);
+    color:#fff;
+  }
+
+  .progressWrap{margin:6px 0 22px;}
+  .progressLabel{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--text-light);
+    margin-bottom:6px;
+  }
+  .progressBarBg{
+    background:var(--sub);
+    border-radius:10px;
+    height:8px;
+    overflow:hidden;
+  }
+  .progressBarFill{
+    background:var(--accent);
+    height:100%;
+    border-radius:10px;
+    transition:width .3s ease;
+  }
+  .qText{
+    font-size:17px;
+    font-weight:bold;
+    line-height:1.7;
+    text-align:center;
+    margin:20px 0 24px;
+    min-height:60px;
+  }
+  .optList{display:flex; flex-direction:column; gap:12px;}
+  .optBtn{
+    background:#fff;
+    border:2px solid var(--accent-soft);
+    border-radius:16px;
+    padding:16px 14px;
+    font-size:14.5px;
+    text-align:left;
+    color:var(--text);
+    cursor:pointer;
+    line-height:1.5;
+  }
+  .optBtn:active{background:var(--sub);}
+  .optBtn.selected{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:bold;
+  }
+
+  .resultHeader{
+    text-align:center;
+    padding:10px 0 6px;
+  }
+  .resultHeader .kicker{
+    font-size:13px;
+    color:var(--text-light);
+  }
+  .typeName{
+    font-size:26px;
+    font-weight:bold;
+    color:var(--accent-dark);
+    margin:8px 0 14px;
+    line-height:1.4;
+  }
+  .scoreCircleWrap{
+    display:flex;
+    justify-content:center;
+    margin:10px 0 6px;
+  }
+  .scoreCircle{
+    width:150px;
+    height:150px;
+  }
+  .scoreNum{
+    font-size:38px;
+    font-weight:bold;
+    fill:var(--accent-dark);
+  }
+  .scoreDenom{
+    font-size:13px;
+    fill:var(--text-light);
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:20px 18px;
+    margin:16px 0;
+  }
+  .cardTitle{
+    font-size:15px;
+    font-weight:bold;
+    color:var(--accent-dark);
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .cardText{
+    font-size:14px;
+    line-height:1.9;
+    color:var(--text);
+  }
+  .tipList{
+    margin:12px 0 0;
+    padding-left:20px;
+    font-size:13.5px;
+    line-height:1.9;
+    color:var(--text);
+  }
+  .tipList li{margin-bottom:6px;}
+  .resultDisclaimer{
+    font-size:11px;
+    color:var(--text-light);
+    text-align:center;
+    line-height:1.7;
+    margin:22px 0 6px;
+    padding:0 6px;
+  }
+  .concernTags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:10px;
+  }
+  .concernTag{
+    background:var(--sub);
+    color:var(--accent-dark);
+    font-size:11.5px;
+    padding:5px 10px;
+    border-radius:14px;
+  }
+
+  .radarWrap{text-align:center;}
+  .barList{margin-top:16px;}
+  .barRow{margin-bottom:12px;}
+  .barLabelRow{
+    display:flex;
+    justify-content:space-between;
+    font-size:12.5px;
+    margin-bottom:4px;
+    color:var(--text);
+  }
+  .barLabelRow b{color:var(--accent-dark);}
+  .barBg{
+    background:var(--sub);
+    border-radius:8px;
+    height:10px;
+    overflow:hidden;
+  }
+  .barFill{
+    background:linear-gradient(90deg,var(--accent),var(--accent-dark));
+    height:100%;
+    border-radius:8px;
+  }
+
+  .futureGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:8px;
+  }
+  .futureCol{
+    border-radius:14px;
+    padding:14px 10px;
+  }
+  .futureCol.bad{background:var(--sub);}
+  .futureCol.good{background:var(--mint);}
+  .futureColTitle{
+    font-size:12.5px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .futureCol.bad .futureColTitle{color:var(--accent-dark);}
+  .futureCol.good .futureColTitle{color:var(--mint-dark);}
+  .futureCol ul{
+    margin:0;
+    padding-left:16px;
+    font-size:11.8px;
+    line-height:1.7;
+    color:var(--text);
+  }
+  .arrowMid{
+    text-align:center;
+    font-size:20px;
+    color:var(--text-light);
+    margin:2px 0;
+  }
+
+  .senseiCard{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .senseiIcon{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:var(--accent-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    flex-shrink:0;
+  }
+  .senseiName{
+    font-size:12.5px;
+    color:var(--text-light);
+    margin-bottom:4px;
+  }
+  .senseiQuote{
+    font-size:14.5px;
+    line-height:1.8;
+    color:var(--text);
+  }
+
+  .actionBtns{margin-top:22px;}
+  .actionRow{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .flatBtn{
+    background:#fff;
+    border:2px solid var(--accent-soft);
+    color:var(--accent-dark);
+    padding:13px 0;
+    border-radius:14px;
+    font-size:13.5px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .lineSticky{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:480px;
+    padding:14px 22px calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, var(--bg) 65%, rgba(255,250,249,0));
+    z-index:50;
+  }
+  .lineBtn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    width:100%;
+    background:var(--line-green);
+    color:#fff;
+    text-decoration:none;
+    text-align:center;
+    padding:14px 10px;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    border:none;
+    cursor:pointer;
+  }
+  .lineBtnMain{font-size:14.5px; font-weight:bold;}
+  .lineBtnSub{font-size:12px; font-weight:normal; opacity:.95;}
+  .restartLink{
+    display:block;
+    text-align:center;
+    color:var(--text-light);
+    font-size:12.5px;
+    margin-top:18px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:26px;
+    transform:translateX(-50%) translateY(0);
+    background:rgba(74,64,69,0.92);
+    color:#fff;
+    padding:11px 20px;
+    border-radius:24px;
+    font-size:13px;
+    z-index:999;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    white-space:nowrap;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+  #copyArea{
+    position:absolute;
+    left:-9999px;
+    top:-9999px;
+  }
+
+  @media print{
+    @page{ size:A4; margin:14mm; }
+    body{background:#fff;}
+    .no-print{display:none !important;}
+    #app{max-width:100%; padding-bottom:0;}
+    .screen{display:none !important;}
+    #screen-result{display:block !important;}
+    #screen-result .content{padding:0;}
+    .card{
+      box-shadow:none;
+      border:1px solid #ddd;
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    .printHeader{
+      display:block;
+      text-align:center;
+      margin-bottom:16px;
+      padding-bottom:10px;
+      border-bottom:2px solid #333;
+    }
+    .printHeader .printClinicName{
+      font-size:19px;
+      font-weight:bold;
+      color:#000;
+    }
+    .printHeader .printClinicContact{
+      font-size:12px;
+      color:#333;
+      margin-top:3px;
+    }
+    .typeName, .cardTitle, .scoreNum{color:#000 !important; fill:#000 !important;}
+    #radarSvg text{fill:#000 !important;}
+    .resultDisclaimer{color:#555 !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- START -->
+  <section class="screen active" id="screen-start">
+    <div class="content">
+      <div class="heroIcon">🌸</div>
+      <h1 class="appTitle">産後の不調セルフ診断</h1>
+      <p class="lead">産後のからだと心の状態を、<br>約1分の質問でやさしくチェックします。</p>
+      <div class="clinicIntro" id="clinicIntro"></div>
+      <div class="badgeRow">
+        <span class="badge">文字入力なし</span>
+        <span class="badge">約1分</span>
+        <span class="badge">タップだけ</span>
+      </div>
+      <button class="primaryBtn" onclick="goTo('screen-step1')">診断をはじめる</button>
+      <p class="disclaimer">※本診断は医療的な検査・診断ではなく、日々のセルフチェックを目的としたものです。気になる症状が続く場合は医療機関へご相談ください。</p>
+    </div>
+  </section>
+
+  <!-- STEP1 concerns -->
+  <section class="screen" id="screen-step1">
+    <header class="topbar">
+      <button class="back-btn" onclick="goTo('screen-start')">← はじめに戻る</button>
+    </header>
+    <div class="content">
+      <h2 class="stepTitle">今、気になっていることは？</h2>
+      <p class="stepSub">当てはまるものを <b>最大3つ</b> 選んでください</p>
+      <div class="concernGrid" id="concernGrid"></div>
+      <button class="primaryBtn" onclick="fromStep1()">次へ</button>
+    </div>
+  </section>
+
+  <!-- STEP2 age -->
+  <section class="screen" id="screen-step2">
+    <header class="topbar">
+      <button class="back-btn" onclick="goTo('screen-step1')">← 前へ戻る</button>
+    </header>
+    <div class="content">
+      <h2 class="stepTitle">年齢を教えてください</h2>
+      <p class="stepSub">ボタンで調整できます</p>
+      <div class="ageBox">
+        <div class="ageDisplay"><span id="ageNum">40</span><span>歳</span></div>
+        <div class="ageAdjust">
+          <button class="roundBtn" onclick="changeAge(-1)">−</button>
+          <button class="roundBtn" onclick="changeAge(1)">＋</button>
+        </div>
+        <div class="decadeRow" id="decadeRow"></div>
+      </div>
+      <button class="primaryBtn" onclick="goTo('screen-step3'); renderQuestion();">次へ</button>
+    </div>
+  </section>
+
+  <!-- STEP3 questions -->
+  <section class="screen" id="screen-step3">
+    <header class="topbar">
+      <button class="back-btn" onclick="prevQuestion()">← 前へ戻る</button>
+    </header>
+    <div class="content">
+      <div class="progressWrap">
+        <div class="progressLabel">
+          <span id="qCounter">Q1/12</span>
+          <span>質問</span>
+        </div>
+        <div class="progressBarBg"><div class="progressBarFill" id="progressFill" style="width:8.3%"></div></div>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div class="optList" id="optList"></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="screen-result">
+    <div class="content">
+      <div id="resultSheet">
+        <div class="printHeader" id="printHeader"></div>
+        <div class="resultHeader">
+          <div class="kicker">あなたの産後タイプは…</div>
+          <div class="typeName" id="typeName">-</div>
+          <div class="scoreCircleWrap">
+            <svg class="scoreCircle" viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r="62" fill="none" stroke="#ffe3e9" stroke-width="12"/>
+              <circle id="scoreArc" cx="75" cy="75" r="62" fill="none" stroke="#ff96a8" stroke-width="12" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+              <text x="75" y="72" text-anchor="middle" class="scoreNum" id="scoreNumText">0</text>
+              <text x="75" y="94" text-anchor="middle" class="scoreDenom">/ 100点</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">📋 今のあなたの傾向</div>
+          <div class="cardText" id="trendText"></div>
+          <div class="concernTags" id="concernTags"></div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">🔮 このまま続くと…</div>
+          <div class="cardText" id="predictText"></div>
+        </div>
+
+        <div class="card radarWrap">
+          <div class="cardTitle" style="justify-content:center;">📊 7つの指標バランス</div>
+          <svg id="radarSvg" viewBox="0 0 360 360" width="100%" style="max-width:340px;"></svg>
+          <div class="barList" id="barList"></div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">💡 今のあなたが一番整えたいところ</div>
+          <div class="cardText">「<span id="weakCatName">-</span>」が、今いちばん労ってあげたいポイントです。<br>今日からできる、小さなことを3つだけ。</div>
+          <ul class="tipList" id="weakTips"></ul>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">🔀 ふたつの未来</div>
+          <div class="futureGrid">
+            <div class="futureCol bad">
+              <div class="futureColTitle">このまま続けると</div>
+              <ul id="futureBad"></ul>
+            </div>
+            <div class="futureCol good">
+              <div class="futureColTitle">少しずつ整えると</div>
+              <ul id="futureGood"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card senseiCard">
+          <div class="senseiIcon">👩‍⚕️</div>
+          <div>
+            <div class="senseiName">産後ケアアドバイザー・ひなた先生より</div>
+            <div class="senseiQuote" id="senseiText"></div>
+          </div>
+        </div>
+
+        <p class="resultDisclaimer">本診断は医学的な診断ではありません。症状が続く場合は医療機関にご相談ください。</p>
+      </div>
+
+      <div class="actionBtns no-print">
+        <div class="actionRow">
+          <button class="flatBtn" onclick="copyResult()">📋 結果をコピー</button>
+          <button class="flatBtn" onclick="window.print()">🖨 印刷/PDF保存</button>
+        </div>
+        <button class="restartLink" onclick="restartAll()">もう一度診断する</button>
+      </div>
+    </div>
+
+    <div class="lineSticky no-print">
+      <a class="lineBtn" href="#" id="lineBtn" target="_blank" rel="noopener" onclick="onLineClick(event)">
+        <span class="lineBtnMain">あなたのタイプに合わせたセルフケアを受け取る</span>
+        <span class="lineBtnSub">🟢 LINEで友だち追加（無料）</span>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<textarea id="copyArea"></textarea>
+
+<script>
+(function(){
+
+  // ============================================================
+  // ★ここを書き換えてください（院の情報・LINE設定）
+  // ・空欄のままでもエラーにはなりません
+  // ・CLINIC_NAME を空文字 "" にすると「〇〇整体院」と表示されます
+  // ============================================================
+  var CLINIC_NAME  = "ながえ整骨院";            // 院名
+  var CLINIC_PHONE = "";                          // 電話番号（任意）例: "047-123-4567"
+  var CLINIC_INTRO = "";                          // 院の紹介文（任意・1〜2行推奨）
+  var LINE_URL     = "https://lin.ee/jC7sbH0";    // LINE公式アカウントのURL
+  // ============================================================
+
+  function clinicDisplayName(){
+    return (CLINIC_NAME && CLINIC_NAME.trim()) ? CLINIC_NAME.trim() : "〇〇整体院";
+  }
+
+  // ============================================================
+  // ★悩みの選択肢（STEP1・最大8つ）を変えたいときはここ
+  // ============================================================
+  var CONCERNS = [
+    "腰・骨盤のゆがみ",
+    "慢性的な疲れ・だるさ",
+    "睡眠不足・眠りの浅さ",
+    "気分の浮き沈み",
+    "肩こり・首のこり",
+    "むくみ・冷え",
+    "体型・体重の変化",
+    "抱っこ・授乳による腕の痛み"
+  ];
+
+  var CATS = [
+    {short:"体力", full:"体力・疲労回復力"},
+    {short:"骨盤", full:"骨盤・体幹の安定"},
+    {short:"睡眠", full:"睡眠の質"},
+    {short:"姿勢", full:"姿勢・骨格バランス"},
+    {short:"こころ", full:"こころの安定"},
+    {short:"巡り", full:"血流・巡り"},
+    {short:"筋力", full:"筋力・柔軟性"}
+  ];
+
+  // ============================================================
+  // ★質問文・選択肢・点数配分を変えたいときはここ
+  // ・各質問は cat:0〜6 のどれかに属します（7つの指標に対応）
+  // ・選択肢は左から「良い状態→悪い状態」の順に4つ並べてください
+  //   （そのまま 0点・1点・2点・3点(悪い) として自動集計されます）
+  // ============================================================
+  var QUESTIONS = [
+    {cat:0, text:"朝、ふとんから出るときの最初の一歩はどうですか？", opts:[
+      "すっと立てて、そのまま動ける",
+      "少し体が固いけど、動いているうちに慣れてくる",
+      "足腰が重くて、何かに支えてもらわないと立ちにくい",
+      "痛みや突っ張りがあって、しばらくその場から動けない"
+    ]},
+    {cat:0, text:"晩ごはんの支度をする夕方ごろ、体はどんな感じですか？", opts:[
+      "まだ元気に動ける",
+      "疲れは感じるけど、なんとか動ける",
+      "一度座って休まないと、次の家事に進めない",
+      "横になりたいくらい、へとへとになっている"
+    ]},
+    {cat:1, text:"赤ちゃんを抱っこして15分くらい経つと、腰やお腹まわりはどうなりますか？", opts:[
+      "特に変わらず、楽なまま過ごせる",
+      "少し張ってくるけど、我慢できる範囲",
+      "誰かに代わってほしいくらい、つらくなってくる",
+      "抱っこを続けるのが難しいくらい、痛みが出てくる"
+    ]},
+    {cat:1, text:"1日にどれくらいの時間、座って過ごしていますか？（授乳・食事・スマホの時間も含めて）", opts:[
+      "3時間以内くらい",
+      "3〜6時間くらい",
+      "6〜9時間くらい",
+      "9時間以上、ほとんど座りっぱなし"
+    ]},
+    {cat:2, text:"昨日の夜、目が覚めた回数はどれくらいでしたか？（授乳で起きた場合も含めて）", opts:[
+      "0〜1回で、朝までぐっすり眠れた",
+      "2〜3回くらい目が覚めた",
+      "4回以上、何度も目が覚めた",
+      "ほとんど眠れた感覚がなかった"
+    ]},
+    {cat:2, text:"日中、座って一息ついているとき、眠気はどれくらいきますか？", opts:[
+      "眠くならず、普通に過ごせる",
+      "少しウトウトすることがある",
+      "気づいたら数分うとうと寝てしまうことがある",
+      "座るとすぐ、強い眠気に襲われる"
+    ]},
+    {cat:3, text:"スマホや鏡で自分の横顔・立ち姿が映ったとき、気になることはありますか？", opts:[
+      "特に気にならない",
+      "少し肩が前に出ているかなと感じる",
+      "肩や腰の高さが左右で違う気がする",
+      "自分でもはっきりわかるくらい、姿勢が崩れている"
+    ]},
+    {cat:3, text:"夕方、自分の肩や首をさわってみると、どんな感じですか？", opts:[
+      "やわらかく、こりを感じない",
+      "少し張っているけど、押すとほぐれる",
+      "いつもガチガチにこっている",
+      "頭が痛くなるくらい、こっている"
+    ]},
+    {cat:4, text:"赤ちゃんがなかなか泣き止まないとき、自分の気持ちはどうなりますか？", opts:[
+      "落ち着いて対応できる",
+      "ちょっと焦るけど、すぐ立て直せる",
+      "イライラしたり、涙が出てきたりする",
+      "頭が真っ白になって、何も考えられなくなる"
+    ]},
+    {cat:4, text:"夜、布団に入ったとき、頭の中はどんな感じですか？", opts:[
+      "そのまま自然に眠りにつける",
+      "少し考えごとをするけど、眠りにつける",
+      "気になることが頭をぐるぐる回って、寝つけない",
+      "涙が出たり、気持ちが沈んで眠れない日がある"
+    ]},
+    {cat:5, text:"夕方、靴や靴下を脱ぐとき、足の感じはどうですか？", opts:[
+      "特にきつさを感じない",
+      "少し跡がついている程度",
+      "脱ぐときに窮屈さを感じる",
+      "足がパンパンで、脱ぐのがつらいくらいむくんでいる"
+    ]},
+    {cat:6, text:"床に落ちたものを拾おうとしゃがんだとき、体の感じはどうですか？", opts:[
+      "すっと屈んで、すっと立てる",
+      "少し体が硬いけど、問題なくできる",
+      "膝や腰に手をついて、支えないと立てない",
+      "しゃがむ・立つのがつらくて、できれば避けたい"
+    ]}
+  ];
+
+  var CATEGORY_TIPS = [
+    ["夜ふとんに入ったら、3回だけゆっくり深呼吸してから目を閉じてみる",
+     "家事の合間に、1分だけ座って肩の力を抜く時間をつくる",
+     "今日いちばん疲れたなと思った瞬間に、コップ1杯の水を飲んでみる"],
+    ["抱っこするときは、片足を少し前に出して土台を安定させてみる",
+     "座りっぱなしが続いたら、30分に1回だけ立ち上がって伸びをする",
+     "椅子に座るとき、お尻の下にクッションを1枚敷いてみる"],
+    ["寝る30分前だけ、スマホの画面から離れてみる",
+     "布団に入ったら、今日よかったことを1つだけ思い出してみる",
+     "寝る前だけ、部屋の明かりを少し暗めにしてみる"],
+    ["授乳や抱っこのときだけ、クッションで腕の高さを支えてみる",
+     "肩が上がってきたなと感じたら、1回だけすとんと肩を落としてみる",
+     "1日1回、壁に背中とかかとをつけて立つ時間を10秒つくる"],
+    ["今日感じたモヤモヤを、頭の中だけでなく声か紙に出してみる",
+     "1日1回、自分をひとこと褒める時間をつくる",
+     "「今日はこれだけで十分」と、心の中で自分に言ってあげる"],
+    ["足首を10回だけ、ぐるぐる回してみる",
+     "座っているあいだに、かかとの上げ下げを10回してみる",
+     "湯船に5分だけでも浸かる日をつくってみる"],
+    ["しゃがむときは、壁や家具に手を添えてゆっくり立ってみる",
+     "赤ちゃんを下ろすときは、膝を曲げて腰を落としてから下ろす",
+     "1日1回だけ、その場でかかとの上げ下げを5回してみる"]
+  ];
+
+  // ============================================================
+  // ★タイプ判定のしきい値・診断文を変えたいときはここ
+  // ・min: 100点満点中、何点以上でこのタイプになるか
+  // ============================================================
+  var TIERS = [
+    {min:80, name:"しなやか回復タイプ",
+      trend:"今のあなたは、体も心もバランスよく整っています。日々のちょっとした工夫が、ちゃんと体に届いている証拠です。",
+      predict:"今のペースを続けていければ、この心地よい状態はこれからも続いていきそうです。今のうちに、その習慣を大切にしていきましょう。",
+      futureBad:["朝の身支度が、今のペースでスムーズに進む","抱っこや家事のあとも、思ったより疲れが残らない","夜、布団に入ったらすっと眠りにつける日が続く"],
+      futureGood:["疲れをより感じにくい日が増えていく","靴下や靴を履くときの体の軽さにも気づけるようになる","笑って過ごせる時間がさらに増えていく"],
+      advice:"今のいい流れを、ゆっくり長く続けていきましょうね。無理をせず、その調子です。"
+    },
+    {min:55, name:"コツコツ回復タイプ",
+      trend:"少しずつ回復に向かっている途中です。ただ、疲れや体のサインもぽつぽつ出てきているみたい。よくここまでがんばってこられましたね。",
+      predict:"このまま忙しい日々が続くと、疲れが積み重なっていくかもしれません。でも、今ならまだ間に合います。少し手を止めるだけで、体はちゃんと応えてくれます。",
+      futureBad:["夕方に靴下を脱ぐとき、ちょっと窮屈に感じる日が増えるかも","朝の身支度に、今より少し時間がかかるようになるかも","眠っても疲れが残ったまま朝を迎える日が増えるかも"],
+      futureGood:["夕方になっても足がすっきりして、靴下を履くのが楽になる","朝の身支度が、今より少し早く終わるようになる","眠りが深くなって、朝の目覚めが軽くなる"],
+      advice:"がんばっている証拠です。ここで少しだけ、自分を休ませる時間を足してあげましょう。"
+    },
+    {min:30, name:"がんばりすぎタイプ",
+      trend:"心にも体にも、疲れがしっかり積み重なっているようです。ここまで本当によくがんばってこられました。まずはそのことを、自分でも認めてあげてくださいね。",
+      predict:"このまま無理を続けると、体の負担がさらに増えてしまうかもしれません。でも今ならまだ、立て直せるタイミングです。小さなことから、一緒に整えていきましょう。",
+      futureBad:["朝、起き上がるときの体の重さが、今よりつらく感じるかも","靴下や靴を履くとき、足のむくみが気になる日が増えるかも","気持ちの余裕がなくなり、涙が出やすくなるかも"],
+      futureGood:["朝、起き上がる瞬間が、少し軽く感じられるようになる","夕方でも足がむくみにくくなり、靴下がすっと履ける","気持ちにも少しずつ、ゆとりが戻ってくる"],
+      advice:"十分すぎるくらい、がんばってきましたね。そろそろ自分を労ってあげる番です。焦らなくて大丈夫ですよ。"
+    },
+    {min:0, name:"SOSタイプ",
+      trend:"心も体も、かなり疲れがたまっているサインが出ています。ひとりでたくさんのことを抱えてこられたのだと思います。",
+      predict:"このままの状態が続くと、毎日がもっとつらく感じられてしまうかもしれません。でも、今ならまだ間に合います。ひとりで抱え込まず、少しずつで大丈夫です。",
+      futureBad:["朝、起き上がることそのものがつらく感じる日が増えるかも","抱っこや家事のあと、動けないくらい疲れてしまうかも","気持ちが沈んで、笑う余裕がなくなってしまうかも"],
+      futureGood:["朝、体を起こすのが今より少し楽になる","抱っこのあとも、休めば疲れが回復しやすくなる","気持ちに少しずつ、笑顔が戻ってくる"],
+      advice:"ひとりで抱え込まなくて大丈夫。今日からほんの小さな一歩を、一緒に踏み出していきましょう。"
+    }
+  ];
+
+  var state = {
+    concerns: [],
+    age: 40,
+    answers: new Array(QUESTIONS.length).fill(null),
+    q: 0
+  };
+
+  function goTo(id){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+    window.scrollTo(0,0);
+  }
+
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.classList.remove("show"); }, 1800);
+  }
+
+  // ---- STEP1 ----
+  function renderConcerns(){
+    var grid = document.getElementById("concernGrid");
+    grid.innerHTML = "";
+    CONCERNS.forEach(function(label, i){
+      var btn = document.createElement("button");
+      btn.className = "concernBtn";
+      btn.textContent = label;
+      btn.onclick = function(){ toggleConcern(i, btn); };
+      grid.appendChild(btn);
+    });
+  }
+
+  function toggleConcern(i, btn){
+    var idx = state.concerns.indexOf(i);
+    if(idx > -1){
+      state.concerns.splice(idx,1);
+      btn.classList.remove("selected");
+      return;
+    }
+    if(state.concerns.length >= 3){
+      showToast("選べるのは最大3つまでです");
+      return;
+    }
+    state.concerns.push(i);
+    btn.classList.add("selected");
+  }
+
+  function fromStep1(){
+    if(state.concerns.length === 0){
+      showToast("1つ以上選んでください");
+      return;
+    }
+    goTo("screen-step2");
+  }
+
+  // ---- STEP2 ----
+  function renderAge(){
+    document.getElementById("ageNum").textContent = state.age;
+    document.querySelectorAll(".decadeBtn").forEach(function(b){
+      var d = parseInt(b.getAttribute("data-decade"),10);
+      b.classList.toggle("active", state.age >= d && state.age < d+10);
+    });
+  }
+
+  function changeAge(delta){
+    state.age = Math.max(15, Math.min(65, state.age + delta));
+    renderAge();
+  }
+
+  function setDecade(d){
+    state.age = d;
+    renderAge();
+  }
+
+  function renderDecadeButtons(){
+    var row = document.getElementById("decadeRow");
+    [20,30,40,50,60].forEach(function(d){
+      var b = document.createElement("button");
+      b.className = "decadeBtn";
+      b.setAttribute("data-decade", d);
+      b.textContent = d + "代";
+      b.onclick = function(){ setDecade(d); };
+      row.appendChild(b);
+    });
+    renderAge();
+  }
+
+  // ---- STEP3 ----
+  function renderQuestion(){
+    var i = state.q;
+    var q = QUESTIONS[i];
+    document.getElementById("qCounter").textContent = "Q" + (i+1) + "/" + QUESTIONS.length;
+    document.getElementById("progressFill").style.width = ((i+1)/QUESTIONS.length*100) + "%";
+    document.getElementById("qText").textContent = q.text;
+
+    var list = document.getElementById("optList");
+    list.innerHTML = "";
+    q.opts.forEach(function(opt, oi){
+      var btn = document.createElement("button");
+      btn.className = "optBtn" + (state.answers[i] === oi ? " selected" : "");
+      btn.textContent = opt;
+      btn.onclick = function(){ selectOption(oi); };
+      list.appendChild(btn);
+    });
+  }
+
+  function selectOption(oi){
+    state.answers[state.q] = oi;
+    if(state.q < QUESTIONS.length - 1){
+      state.q++;
+      renderQuestion();
+    } else {
+      computeResult();
+      goTo("screen-result");
+    }
+  }
+
+  function prevQuestion(){
+    if(state.q > 0){
+      state.q--;
+      renderQuestion();
+      goTo("screen-step3");
+    } else {
+      goTo("screen-step2");
+    }
+  }
+
+  // ---- RESULT ----
+  function getTier(score){
+    for(var i=0;i<TIERS.length;i++){
+      if(score >= TIERS[i].min) return TIERS[i];
+    }
+    return TIERS[TIERS.length-1];
+  }
+
+  var lastResult = null;
+
+  function computeResult(){
+    var sum = 0;
+    state.answers.forEach(function(a){ sum += a; });
+    var maxSum = QUESTIONS.length * 3;
+    var score = Math.round(100 - (sum / maxSum) * 100);
+
+    var catSum = [0,0,0,0,0,0,0];
+    var catCount = [0,0,0,0,0,0,0];
+    QUESTIONS.forEach(function(q, i){
+      catSum[q.cat] += state.answers[i];
+      catCount[q.cat] += 1;
+    });
+    var catScores = catSum.map(function(s, i){
+      var maxC = catCount[i] * 3;
+      return maxC === 0 ? 0 : Math.round(100 - (s / maxC) * 100);
+    });
+
+    var tier = getTier(score);
+
+    var weakIdx = 0;
+    for(var i=1;i<catScores.length;i++){
+      if(catScores[i] < catScores[weakIdx]) weakIdx = i;
+    }
+
+    lastResult = {score:score, tier:tier, catScores:catScores, weakIdx:weakIdx};
+    renderResult();
+  }
+
+  function renderResult(){
+    var r = lastResult;
+    document.getElementById("typeName").textContent = r.tier.name;
+    document.getElementById("scoreNumText").textContent = r.score;
+    document.getElementById("trendText").textContent = r.tier.trend;
+    document.getElementById("predictText").textContent = r.tier.predict;
+    document.getElementById("senseiText").textContent = "「" + r.tier.advice + "」";
+
+    // score arc
+    var circumference = 2 * Math.PI * 62;
+    var arc = document.getElementById("scoreArc");
+    var offset = circumference * (1 - r.score/100);
+    arc.setAttribute("stroke-dasharray", circumference);
+    arc.setAttribute("stroke-dashoffset", offset);
+
+    // concern tags
+    var tagsEl = document.getElementById("concernTags");
+    tagsEl.innerHTML = "";
+    state.concerns.forEach(function(i){
+      var span = document.createElement("span");
+      span.className = "concernTag";
+      span.textContent = CONCERNS[i];
+      tagsEl.appendChild(span);
+    });
+
+    // futures
+    var badEl = document.getElementById("futureBad");
+    var goodEl = document.getElementById("futureGood");
+    badEl.innerHTML = "";
+    goodEl.innerHTML = "";
+    r.tier.futureBad.forEach(function(t){
+      var li = document.createElement("li"); li.textContent = t; badEl.appendChild(li);
+    });
+    r.tier.futureGood.forEach(function(t){
+      var li = document.createElement("li"); li.textContent = t; goodEl.appendChild(li);
+    });
+
+    renderRadar(r.catScores);
+    renderBars(r.catScores);
+
+    // weakest indicator + tips
+    document.getElementById("weakCatName").textContent = CATS[r.weakIdx].full;
+    var tipsEl = document.getElementById("weakTips");
+    tipsEl.innerHTML = "";
+    CATEGORY_TIPS[r.weakIdx].forEach(function(t){
+      var li = document.createElement("li"); li.textContent = t; tipsEl.appendChild(li);
+    });
+  }
+
+  function renderRadar(scores){
+    var cx = 180, cy = 180, maxR = 95, labelR = 135;
+    var n = CATS.length;
+    var svg = document.getElementById("radarSvg");
+    var ns = "http://www.w3.org/2000/svg";
+    svg.innerHTML = "";
+
+    function point(i, r){
+      var angle = -Math.PI/2 + i * (2*Math.PI/n);
+      return {x: cx + r*Math.cos(angle), y: cy + r*Math.sin(angle)};
+    }
+
+    // grid circles
+    [0.25,0.5,0.75,1].forEach(function(f){
+      var pts = [];
+      for(var i=0;i<n;i++){
+        var p = point(i, maxR*f);
+        pts.push(p.x + "," + p.y);
+      }
+      var poly = document.createElementNS(ns,"polygon");
+      poly.setAttribute("points", pts.join(" "));
+      poly.setAttribute("fill","none");
+      poly.setAttribute("stroke","#f3dfe4");
+      poly.setAttribute("stroke-width","1");
+      svg.appendChild(poly);
+    });
+
+    // axes + labels
+    for(var i=0;i<n;i++){
+      var p0 = point(i,0), p1 = point(i,maxR);
+      var line = document.createElementNS(ns,"line");
+      line.setAttribute("x1",p0.x); line.setAttribute("y1",p0.y);
+      line.setAttribute("x2",p1.x); line.setAttribute("y2",p1.y);
+      line.setAttribute("stroke","#f3dfe4");
+      line.setAttribute("stroke-width","1");
+      svg.appendChild(line);
+
+      var lp = point(i, labelR);
+      var anchor = "middle";
+      if(lp.x < cx - 8) anchor = "end";
+      else if(lp.x > cx + 8) anchor = "start";
+      var text = document.createElementNS(ns,"text");
+      text.setAttribute("x", lp.x);
+      text.setAttribute("y", lp.y);
+      text.setAttribute("text-anchor", anchor);
+      text.setAttribute("dominant-baseline","middle");
+      text.setAttribute("font-size","15");
+      text.setAttribute("fill","#4a4045");
+      text.setAttribute("font-weight","bold");
+      text.textContent = CATS[i].short;
+      svg.appendChild(text);
+    }
+
+    // data polygon
+    var dataPts = [];
+    for(var i=0;i<n;i++){
+      var p = point(i, maxR * (scores[i]/100));
+      dataPts.push(p.x + "," + p.y);
+    }
+    var dataPoly = document.createElementNS(ns,"polygon");
+    dataPoly.setAttribute("points", dataPts.join(" "));
+    dataPoly.setAttribute("fill","rgba(255,150,168,0.35)");
+    dataPoly.setAttribute("stroke","#e8748f");
+    dataPoly.setAttribute("stroke-width","2");
+    svg.appendChild(dataPoly);
+
+    for(var i=0;i<n;i++){
+      var p = point(i, maxR * (scores[i]/100));
+      var dot = document.createElementNS(ns,"circle");
+      dot.setAttribute("cx",p.x); dot.setAttribute("cy",p.y); dot.setAttribute("r","3.5");
+      dot.setAttribute("fill","#e8748f");
+      svg.appendChild(dot);
+    }
+  }
+
+  function renderBars(scores){
+    var wrap = document.getElementById("barList");
+    wrap.innerHTML = "";
+    CATS.forEach(function(c, i){
+      var row = document.createElement("div");
+      row.className = "barRow";
+      row.innerHTML =
+        '<div class="barLabelRow"><span>' + c.full + '</span><b>' + scores[i] + '</b></div>' +
+        '<div class="barBg"><div class="barFill" style="width:' + scores[i] + '%"></div></div>';
+      wrap.appendChild(row);
+    });
+  }
+
+  // ---- actions ----
+  function buildResultText(){
+    var r = lastResult;
+    var lines = [];
+    lines.push("【産後の不調セルフ診断】");
+    lines.push("タイプ：" + r.tier.name);
+    lines.push("スコア：" + r.score + "点 / 100点");
+    lines.push("");
+    if(state.concerns.length){
+      lines.push("■気になっていること");
+      state.concerns.forEach(function(i){ lines.push("・" + CONCERNS[i]); });
+      lines.push("");
+    }
+    lines.push("■7つの指標バランス");
+    CATS.forEach(function(c,i){ lines.push(c.full + "：" + r.catScores[i] + "点"); });
+    lines.push("");
+    lines.push("■今の傾向");
+    lines.push(r.tier.trend);
+    lines.push("");
+    lines.push("■このまま続くと");
+    lines.push(r.tier.predict);
+    lines.push("");
+    lines.push("■今いちばん整えたいところ：" + CATS[r.weakIdx].full);
+    lines.push("今日からできる3つのこと");
+    CATEGORY_TIPS[r.weakIdx].forEach(function(t){ lines.push("・" + t); });
+    lines.push("");
+    lines.push("ひなた先生より：「" + r.tier.advice + "」");
+    lines.push("");
+    lines.push("※本診断は医学的な診断ではありません。症状が続く場合は医療機関にご相談ください。");
+    return lines.join("\n");
+  }
+
+  function copyResult(){
+    var text = buildResultText();
+    var ok = false;
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text);
+        ok = true;
+      }
+    }catch(e){}
+    if(!ok){
+      var area = document.getElementById("copyArea");
+      area.value = text;
+      area.style.position = "fixed";
+      area.style.left = "0";
+      area.style.top = "0";
+      area.focus();
+      area.select();
+      try{ document.execCommand("copy"); }catch(e){}
+      area.style.position = "absolute";
+      area.style.left = "-9999px";
+    }
+    showToast("結果をコピーしました");
+  }
+
+  function onLineClick(e){
+    if(!LINE_URL){
+      e.preventDefault();
+      showToast("ここにLINEのURLを設定します");
+    }
+  }
+
+  function renderClinicIntro(){
+    var el = document.getElementById("clinicIntro");
+    var parts = ['<span class="clinicName">' + clinicDisplayName() + '</span>　より'];
+    if(CLINIC_INTRO && CLINIC_INTRO.trim()){
+      parts.push(CLINIC_INTRO.trim());
+    }
+    if(CLINIC_PHONE && CLINIC_PHONE.trim()){
+      parts.push('<a href="tel:' + CLINIC_PHONE.trim().replace(/[^0-9+]/g,"") + '">TEL: ' + CLINIC_PHONE.trim() + '</a>');
+    }
+    el.innerHTML = parts.join("<br>");
+  }
+
+  function renderPrintHeader(){
+    var el = document.getElementById("printHeader");
+    var html = '<div class="printClinicName">' + clinicDisplayName() + '</div>';
+    if(CLINIC_PHONE && CLINIC_PHONE.trim()){
+      html += '<div class="printClinicContact">TEL: ' + CLINIC_PHONE.trim() + '</div>';
+    }
+    el.innerHTML = html;
+  }
+
+  function restartAll(){
+    state.concerns = [];
+    state.age = 40;
+    state.answers = new Array(QUESTIONS.length).fill(null);
+    state.q = 0;
+    document.querySelectorAll(".concernBtn").forEach(function(b){ b.classList.remove("selected"); });
+    renderAge();
+    goTo("screen-start");
+  }
+
+  // init
+  renderConcerns();
+  renderDecadeButtons();
+  renderClinicIntro();
+  renderPrintHeader();
+  document.getElementById("lineBtn").setAttribute("href", LINE_URL || "#");
+  window.goTo = goTo;
+  window.fromStep1 = fromStep1;
+  window.changeAge = changeAge;
+  window.renderQuestion = renderQuestion;
+  window.prevQuestion = prevQuestion;
+  window.copyResult = copyResult;
+  window.onLineClick = onLineClick;
+  window.restartAll = restartAll;
+})();
+</script>
+</body>
+</html>
