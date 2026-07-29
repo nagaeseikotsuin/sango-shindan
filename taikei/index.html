@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>産後の体型変化診断｜ながえ整骨院</title>
+<style>
+  :root{
+    --pink:#e3a7ae;
+    --pink-dark:#c9808a;
+    --pink-light:#faeced;
+    --mint:#c3ddd0;
+    --lavender:#ddd0e8;
+    --ivory:#faf6f0;
+    --beige:#f2ebe0;
+    --card:#ffffff;
+    --line:#e9ddd0;
+    --text:#4a3a32;
+    --text-sub:#8a7a6d;
+    --caution:#c98f7a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ivory);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+    line-height:1.7;
+    -webkit-text-size-adjust:100%;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    min-height:100dvh;
+    background:var(--card);
+    box-shadow:0 0 24px rgba(0,0,0,0.05);
+    display:flex;
+    flex-direction:column;
+  }
+  .screen{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    padding:28px 22px 32px;
+    animation:fadeIn .25s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1{font-size:21px;margin:0 0 10px;color:var(--text);}
+  h2{font-size:18px;margin:0 0 6px;color:var(--text);}
+  p{margin:0 0 14px;color:var(--text-sub);font-size:14.5px;}
+
+  .badge{
+    display:inline-block;
+    background:var(--pink-light);
+    color:var(--pink-dark);
+    font-size:12.5px;
+    font-weight:600;
+    padding:5px 12px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+
+  .btn{
+    display:block;
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:16px 18px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    text-align:center;
+    -webkit-tap-highlight-color:transparent;
+    min-height:44px;
+  }
+  .btn-primary{
+    background:var(--pink);
+    color:#fff;
+    box-shadow:0 6px 14px rgba(227,167,174,0.4);
+  }
+  .btn-primary:disabled{
+    background:#ddd2ca;
+    box-shadow:none;
+    cursor:not-allowed;
+  }
+  .btn-primary:active:not(:disabled){background:var(--pink-dark);}
+  .btn-outline{
+    background:#fff;
+    color:var(--pink-dark);
+    border:1.5px solid var(--pink);
+  }
+  .btn-outline:active{background:var(--pink-light);}
+  .btn-text{
+    background:none;
+    color:var(--text-sub);
+    font-weight:600;
+    padding:12px;
+    font-size:14.5px;
+  }
+  .btn-caution{
+    background:#fff;
+    color:var(--caution);
+    border:1.5px solid var(--caution);
+  }
+  .btn-caution:active{background:#fbeee9;}
+
+  .spacer{flex:1;}
+  .foot-actions{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+
+  .card-box{background:var(--beige);border-radius:14px;padding:16px;margin-bottom:6px;}
+  .card-box p{margin:0;color:var(--text);font-size:14px;}
+  .card-box p+p{margin-top:8px;}
+
+  .caution-note{background:#fbeee9;border-radius:14px;padding:14px 16px;margin:14px 0;}
+  .caution-note p{margin:0;color:var(--text);font-size:13px;}
+
+  /* urgent safety check */
+  .urgent-list{background:var(--beige);border-radius:14px;padding:16px 16px 4px;margin-bottom:18px;}
+  .urgent-list ul{margin:0;padding-left:20px;}
+  .urgent-list li{font-size:14px;color:var(--text);margin-bottom:12px;}
+  .urgent-note{font-size:12.5px;color:var(--text-sub);}
+
+  /* smartphone-only: keep the start screen and safety-check screen's buttons
+     within the first viewport (no forced spacer, tightened spacing) */
+  @media (max-width:480px){
+    #screen-start, #screen-urgent{
+      padding-top:14px;
+      padding-bottom:calc(16px + env(safe-area-inset-bottom));
+    }
+    #screen-start .badge, #screen-urgent .badge{margin-bottom:8px;}
+    #screen-start h1, #screen-urgent h1{margin-bottom:5px;}
+    #screen-urgent #urgentIntro{line-height:1.45;margin-bottom:8px;}
+    #screen-start .card-box{padding:14px 16px;}
+    #screen-urgent .urgent-list{padding:10px 14px 2px;margin-bottom:10px;}
+    #screen-urgent .urgent-list li{margin-bottom:6px;line-height:1.4;}
+    #screen-urgent .foot-actions{margin-top:14px;}
+  }
+
+  /* STEP1 concerns */
+  .concern-count{font-size:13px;color:var(--pink-dark);font-weight:700;margin-bottom:12px;}
+  .concern-grid{display:flex;flex-direction:column;gap:10px;}
+  .concern-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:14px 14px;
+    cursor:pointer;
+    transition:.15s;
+    -webkit-tap-highlight-color:transparent;
+    min-height:44px;
+  }
+  .concern-item .check{
+    width:22px;height:22px;min-width:22px;
+    border-radius:7px;
+    border:2px solid #ddd2c8;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;color:#fff;
+    transition:.15s;
+  }
+  .concern-item span.label{font-size:14.5px;color:var(--text);}
+  .concern-item.selected{border-color:var(--pink);background:var(--pink-light);}
+  .concern-item.selected .check{background:var(--pink);border-color:var(--pink);}
+  .concern-item.disabled{opacity:.45;}
+  .limit-msg{font-size:12.5px;color:var(--pink-dark);font-weight:600;margin:-4px 0 10px;min-height:16px;}
+
+  /* STEP2 months */
+  .week-box{
+    display:flex;align-items:center;justify-content:center;gap:26px;
+    margin:18px 0 20px;
+  }
+  .week-btn{
+    width:52px;height:52px;border-radius:50%;
+    border:none;background:var(--pink-light);color:var(--pink-dark);
+    font-size:26px;font-weight:700;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .week-btn:active{background:var(--pink);color:#fff;}
+  .week-value{font-size:38px;font-weight:800;color:var(--text);min-width:150px;text-align:center;}
+  .week-value span{font-size:16px;font-weight:600;color:var(--text-sub);margin-left:4px;}
+  .quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:6px;}
+  .quick-btn{
+    border:1.5px solid var(--line);background:#fff;color:var(--text-sub);
+    border-radius:10px;padding:12px 4px;font-size:13.5px;font-weight:600;cursor:pointer;
+    min-height:44px;
+  }
+  .quick-btn.active{border-color:var(--pink);background:var(--pink-light);color:var(--pink-dark);}
+
+  /* STEP3 questions */
+  .progress-wrap{margin-bottom:22px;}
+  .progress-label{font-size:12.5px;color:var(--text-sub);font-weight:700;margin-bottom:6px;}
+  .progress-bar{height:8px;background:var(--line);border-radius:999px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--pink);border-radius:999px;transition:width .25s ease;}
+  .q-text{font-size:17px;font-weight:700;color:var(--text);margin-bottom:18px;}
+  .choice-list{display:flex;flex-direction:column;gap:10px;}
+  .choice-item{
+    text-align:left;
+    border:1.5px solid var(--line);
+    background:#fff;
+    border-radius:14px;
+    padding:15px 16px;
+    font-size:14.5px;
+    color:var(--text);
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    min-height:44px;
+  }
+  .choice-item.selected{border-color:var(--pink);background:var(--pink-light);font-weight:700;}
+  .choice-item:active{border-color:var(--pink);}
+
+  /* Result */
+  .result-top{text-align:center;padding:6px 0 18px;border-bottom:1px dashed var(--line);margin-bottom:20px;}
+  .type-name{font-size:23px;font-weight:800;margin:2px 0 14px;color:var(--pink-dark);}
+  .score-circle{
+    width:130px;height:130px;border-radius:50%;
+    margin:0 auto 10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border:8px solid var(--pink-light);
+  }
+  .score-circle .num{font-size:34px;font-weight:800;line-height:1;color:var(--pink-dark);}
+  .score-circle .unit{font-size:12px;color:var(--text-sub);margin-top:2px;}
+  .score-meaning{font-size:13.5px;color:var(--text);margin:8px 0 0;}
+  .result-meta{font-size:12.5px;color:var(--text-sub);margin-top:10px;text-align:left;background:var(--beige);border-radius:12px;padding:12px 14px;}
+  .result-meta div{margin-bottom:4px;}
+  .result-meta div:last-child{margin-bottom:0;}
+
+  .section-title{font-size:15px;font-weight:800;color:var(--text);margin:26px 0 10px;display:flex;align-items:center;gap:6px;}
+  .section-title .num-badge{
+    width:22px;height:22px;border-radius:50%;background:var(--pink);color:#fff;
+    font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+
+  .radar-wrap{display:flex;justify-content:center;margin:6px 0 14px;}
+  .radar-wrap svg{width:100%;height:auto;max-width:400px;}
+  .bar-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px;}
+  .bar-row{display:flex;align-items:center;gap:10px;}
+  .bar-row .bar-label{font-size:12px;color:var(--text-sub);width:104px;min-width:104px;}
+  .bar-row .bar-track{flex:1;height:9px;background:var(--line);border-radius:999px;overflow:hidden;}
+  .bar-row .bar-fill{height:100%;background:var(--pink);border-radius:999px;}
+  .bar-row .bar-num{font-size:12.5px;color:var(--text-sub);width:32px;text-align:right;}
+  .weak-note{font-size:12.5px;color:var(--pink-dark);font-weight:700;margin-top:4px;}
+
+  .future-grid{display:flex;gap:10px;}
+  .future-col{flex:1;border-radius:14px;padding:14px 12px;}
+  .future-col.now{background:#f7ede9;}
+  .future-col.better{background:#eef6f0;}
+  .future-col h3{font-size:13px;margin:0 0 8px;font-weight:800;}
+  .future-col.now h3{color:var(--caution);}
+  .future-col.better h3{color:#5c9e78;}
+  .future-col p{margin:0;font-size:12.5px;color:var(--text);}
+
+  .advice-box{
+    background:var(--pink-light);
+    border-radius:16px;
+    padding:18px 16px;
+    display:flex;gap:12px;
+    align-items:flex-start;
+  }
+  .advice-avatar{width:46px;height:46px;min-width:46px;}
+  .advice-box .who{font-size:12.5px;font-weight:700;color:var(--pink-dark);margin-bottom:4px;}
+  .advice-box .msg{font-size:14px;color:var(--text);margin:0;}
+
+  .sheet-actions{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+    background:rgba(74,58,50,0.92);color:#fff;padding:10px 18px;border-radius:999px;
+    font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;
+    max-width:86%;text-align:center;
+  }
+  .toast.show{opacity:1;}
+
+  .line-note{font-size:12px;color:var(--text-sub);margin-top:6px;text-align:center;}
+  .treatment-note{font-size:11.5px;color:var(--text-sub);margin-top:14px;text-align:center;}
+
+  .disclaimer{font-size:11.5px;color:var(--text-sub);text-align:center;margin-top:26px;padding-top:16px;border-top:1px dashed var(--line);}
+
+  .print-only{display:none;}
+  .print-header{
+    display:none;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:2px solid var(--text);
+    padding-bottom:8px;
+    margin-bottom:14px;
+  }
+  .print-header .ph-name{font-size:16px;font-weight:800;color:var(--text);}
+  .print-header .ph-phone{font-size:12px;color:var(--text-sub);}
+
+  .sticky-spacer{height:96px;}
+  .line-sticky{
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:480px;
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top, rgba(255,255,255,1) 65%, rgba(255,255,255,0));
+    z-index:40;
+    display:none;
+  }
+  .line-sticky.active{display:block;}
+  .btn-line{
+    background:#06c755;
+    color:#fff;
+    font-size:15px;
+    line-height:1.4;
+    box-shadow:0 8px 18px rgba(6,199,85,0.32);
+    padding:15px 18px;
+  }
+  .btn-line:active{background:#05a745;}
+
+  @media print{
+    @page{ size:A4 portrait; margin:12mm; }
+    body{background:#fff;}
+    #app{box-shadow:none;max-width:100%;}
+    .screen{display:none !important;padding:0;}
+    .screen#screen-result{display:flex !important;}
+    .no-print{display:none !important;}
+    .print-only{display:block !important;}
+    .print-header{display:flex !important;}
+    .result-top{padding:0 0 10px;margin-bottom:12px;break-inside:avoid;}
+    .type-name{font-size:18px;margin:2px 0 8px;}
+    .score-circle{width:86px;height:86px;border-width:6px;margin-bottom:6px;}
+    .score-circle .num{font-size:20px;}
+    .section-title{margin:12px 0 6px;font-size:13px;break-after:avoid;}
+    .section-title .num-badge{width:18px;height:18px;font-size:10px;}
+    .card-box,.result-meta,.advice-box,.future-grid,.bar-list,.caution-note{break-inside:avoid;}
+    .card-box{padding:10px;}
+    .card-box p{font-size:11.5px;}
+    .caution-note{padding:8px 10px;margin:8px 0;}
+    .caution-note p{font-size:10.5px;}
+    .radar-wrap{margin:2px 0 8px;}
+    .radar-wrap svg{max-width:220px;}
+    .bar-list{gap:4px;}
+    .bar-row .bar-label{font-size:10.5px;}
+    .bar-row .bar-num{font-size:10.5px;}
+    .future-grid{gap:6px;}
+    .future-col{padding:8px 10px;}
+    .future-col h3{font-size:11.5px;}
+    .future-col p{font-size:10.5px;}
+    .advice-box{padding:10px 12px;}
+    .advice-box .msg{font-size:11.5px;}
+    .disclaimer{font-size:9px;margin-top:10px;padding-top:8px;}
+    .treatment-note{font-size:9px;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <section class="screen active" id="screen-urgent">
+    <span class="badge" id="urgentBadge"></span>
+    <h1 id="urgentTitle"></h1>
+    <p id="urgentIntro"></p>
+    <div class="urgent-list">
+      <ul id="urgentItems"></ul>
+    </div>
+    <div class="foot-actions">
+      <button class="btn btn-primary" id="urgentSafeBtn"></button>
+      <button class="btn btn-caution" id="urgentConcernBtn"></button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-urgent-stop">
+    <div class="spacer"></div>
+    <div class="card-box">
+      <p id="urgentStopMsg" style="color:var(--text);font-size:15px;margin:0;"></p>
+    </div>
+    <div class="spacer"></div>
+    <div class="foot-actions">
+      <button class="btn btn-text" id="urgentBackBtn">確認画面に戻る</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-start">
+    <span class="badge" id="startBadge"></span>
+    <h1 id="startTitle"></h1>
+    <p id="startSubtitle"></p>
+    <div class="card-box">
+      <p>・スマホで約1分</p>
+      <p>・入力はすべてタップのみ</p>
+      <p>・結果はその場で確認できます</p>
+    </div>
+    <p class="card-box" id="clinicIntro" style="display:none;"></p>
+    <div class="foot-actions">
+      <button class="btn btn-primary" id="startBeginBtn">診断をはじめる</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-concerns">
+    <h2>気になる悩みを教えてください</h2>
+    <p>あてはまるものを<b>最大3つ</b>まで選んでください。</p>
+    <div class="concern-count" id="concernCount"></div>
+    <div class="limit-msg" id="limitMsg"></div>
+    <div class="concern-grid" id="concernGrid"></div>
+    <div class="spacer"></div>
+    <div class="foot-actions">
+      <button class="btn btn-primary" id="concernsNextBtn" disabled>次へ</button>
+      <button class="btn btn-text" id="concernsBackBtn">戻る</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-profile">
+    <h2 id="profileQuestion"></h2>
+    <p>－／＋ボタンで1か月ずつ調整できます。</p>
+    <div class="week-box">
+      <button class="week-btn" id="weekMinusBtn">−</button>
+      <div class="week-value" id="weekValue"></div>
+      <button class="week-btn" id="weekPlusBtn">＋</button>
+    </div>
+    <div class="quick-grid" id="quickGrid"></div>
+    <div class="spacer"></div>
+    <div class="foot-actions">
+      <button class="btn btn-primary" id="profileNextBtn">次へ</button>
+      <button class="btn btn-text" id="profileBackBtn">戻る</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-question">
+    <div class="progress-wrap">
+      <div class="progress-label" id="qProgressLabel"></div>
+      <div class="progress-bar"><div class="progress-fill" id="qProgressFill"></div></div>
+    </div>
+    <div class="q-text" id="qText"></div>
+    <div class="choice-list" id="qChoices"></div>
+    <div class="spacer"></div>
+    <div class="foot-actions">
+      <button class="btn btn-text" id="qBackBtn">← 前へ戻る</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-result">
+    <div class="print-header print-only" id="printHeader"></div>
+
+    <div class="section-title no-print"><span class="num-badge">1</span>診断タイプとスコア</div>
+    <div class="result-top">
+      <div class="type-name" id="resTypeName"></div>
+      <div class="score-circle" id="resScoreCircle">
+        <div class="num" id="resScoreNum"></div>
+        <div class="unit" id="resScoreLabel"></div>
+      </div>
+      <p class="score-meaning" id="resScoreMeaning"></p>
+      <div class="result-meta">
+        <div id="resMetaConcerns"></div>
+        <div id="resMetaMonths"></div>
+      </div>
+      <div class="caution-note" id="earlyNoteBox" style="display:none;">
+        <p id="earlyNoteText"></p>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="num-badge">2</span>今の傾向</div>
+    <div class="card-box">
+      <p id="resTrend"></p>
+    </div>
+
+    <div class="section-title"><span class="num-badge">3</span>このまま続いた場合と、早めに見直せた場合</div>
+    <div class="future-grid">
+      <div class="future-col now">
+        <h3>このまま負担が重なった場合</h3>
+        <p id="futureNow"></p>
+      </div>
+      <div class="future-col better">
+        <h3>早めに状態を見直せた場合</h3>
+        <p id="futureBetter"></p>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="num-badge">4</span>7つの指標バランス</div>
+    <div class="radar-wrap"><svg id="radarSvg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg></div>
+    <div class="bar-list" id="barList"></div>
+    <div class="weak-note" id="weakNote"></div>
+
+    <div class="section-title"><span class="num-badge">5</span>院長からのコメント</div>
+    <div class="advice-box">
+      <div class="advice-avatar">
+        <svg viewBox="0 0 46 46" width="46" height="46">
+          <circle cx="23" cy="23" r="23" fill="#ffffff"/>
+          <circle cx="23" cy="18" r="8" fill="var(--pink-dark)"/>
+          <path d="M7 40c0-9 7-15 16-15s16 6 16 15" fill="var(--pink-dark)"/>
+        </svg>
+      </div>
+      <div>
+        <div class="who" id="resSenseiName"></div>
+        <p class="msg" id="resAdvice"></p>
+      </div>
+    </div>
+
+    <div class="section-title no-print"><span class="num-badge">6</span>結果シート・ご相談</div>
+    <div class="sheet-actions no-print">
+      <button class="btn btn-outline" id="copyBtn">診断結果をコピー</button>
+      <button class="btn btn-outline" id="printBtn">印刷・PDF保存</button>
+    </div>
+    <p class="treatment-note" id="treatmentNote"></p>
+
+    <div class="disclaimer" id="resDisclaimer"></div>
+    <div class="foot-actions no-print">
+      <button class="btn btn-text" id="restartBtn">最初からやり直す</button>
+    </div>
+    <div class="no-print sticky-spacer"></div>
+  </section>
+
+</div>
+
+<div class="line-sticky no-print" id="lineSticky">
+  <button class="btn btn-line" id="lineBtn"></button>
+  <div class="line-note">院長が内容を確認し、ご返信します。</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================================================================
+   ▼▼▼ ここを書き換えてください（院の情報・LINE設定） ▼▼▼
+   ================================================================ */
+const CLINIC_CONFIG = {
+  clinicName: "ながえ整骨院",
+  lineOfficialAccountId: "@nagaeseikotsuin",
+  lineAddFriendUrl: "https://lin.ee/jC7sbH0",
+  phone: "",
+  clinicIntroduction: "",
+  advisorName: "ながえ先生",
+  advisorTitle: "ながえ整骨院 院長"
+};
+
+/* ================================================================
+   ▼▼▼ ここを書き換えてください（診断内容・質問・結果文章） ▼▼▼
+   質問文、選択肢、点数、指標との対応、結果文章はすべてこの
+   APP_DATA の中でまとめて管理しています。
+   ================================================================ */
+const APP_DATA = {
+  appTitle: "産後の体型変化診断",
+  appSubtitle: "産後の体型と体の使い方を、約1分でチェック",
+  scoreLabel: "今の体型バランススコア",
+
+  urgentCheck: {
+    badge: "診断を始める前に",
+    title: "診断を始める前に",
+    intro: "この診断は、産後の体型変化と日常生活での体の使い方を振り返るためのものです。次のような症状がある場合は、このアプリでは判断せず、出産した医療機関・かかりつけの産婦人科・医療機関へご連絡ください。",
+    items: [
+      "出血が急に増えた、または大きな血の塊が出ている",
+      "発熱や強い悪寒がある",
+      "強い下腹部痛や、悪化している腹痛がある",
+      "帝王切開や会陰切開などの傷に、強い痛み、腫れ、赤みなどがある",
+      "胸の痛みや強い息苦しさがある",
+      "片方の脚だけに、強い腫れ、赤み、痛みがある",
+      "強い頭痛、目のちらつき、急に強くなったむくみなどがある",
+      "意識が遠のく、強いめまい、立っていられないほどの体調不良がある",
+      "自分や赤ちゃんを傷つけてしまいそうな気持ちがある"
+    ],
+    safeButton: "上記には当てはまらない",
+    concernButton: "気になる症状がある",
+    stopMessage: "このアプリでは状態を判断できません。無理をせず、出産した医療機関・かかりつけの産婦人科・医療機関へご連絡ください。胸の痛み、強い息苦しさ、意識が遠のくなど緊急性が高い場合は、119番へご連絡ください。"
+  },
+
+  concerns: [
+    "お腹まわりが戻りにくい",
+    "骨盤まわりの広がりや不安定感",
+    "お尻の形や下がりが気になる",
+    "ウエストのくびれが戻りにくい",
+    "脚のむくみや下半身の太さ",
+    "体重が思うように戻らない",
+    "反り腰・猫背など姿勢の変化",
+    "ズボンや以前の服がきつく感じる"
+  ],
+
+  profileStep: {
+    question: "出産からどのくらい経っていますか？",
+    unit: "か月",
+    min: 0,
+    max: 60,
+    defaultValue: 6,
+    quick: [
+      { label: "産後1か月", value: 1 },
+      { label: "産後3か月", value: 3 },
+      { label: "産後6か月", value: 6 },
+      { label: "産後12か月", value: 12 },
+      { label: "産後24か月", value: 24 },
+      { label: "産後36か月", value: 36 }
+    ]
+  },
+
+  indicators: [
+    { id: "abdomen", shortName: "お腹・体幹",   fullName: "お腹・体幹の使いやすさ" },
+    { id: "pelvis",  shortName: "骨盤・姿勢",   fullName: "骨盤・姿勢の安定感" },
+    { id: "hip",     shortName: "お尻・下半身", fullName: "お尻・下半身の使いやすさ" },
+    { id: "walk",    shortName: "立つ・歩く",   fullName: "立つ・歩くバランス" },
+    { id: "carry",   shortName: "抱っこ・家事", fullName: "抱っこ・家事の続けやすさ" },
+    { id: "rest",    shortName: "休息・回復",   fullName: "休息・回復の取りやすさ" },
+    { id: "daily",   shortName: "日常生活",     fullName: "体型変化による日常生活への影響" }
+  ],
+
+  questions: [
+    { text: "朝、ベッドや布団から起き上がるとき、どのような状態ですか？",
+      indicators: ["abdomen", "daily"],
+      options: [
+        { text: "自分に合った方法で、特に負担なく起き上がれる", score: 3 },
+        { text: "少しゆっくり動けば起き上がれる", score: 2 },
+        { text: "腕で体を支えたり、体の向きを工夫して起き上がっている", score: 1 },
+        { text: "腰やお腹まわりが気になり、起き上がるまでに時間をかけている", score: 0 }
+      ] },
+    { text: "椅子から立ち上がるときは、どのような状態ですか？",
+      indicators: ["pelvis", "hip"],
+      options: [
+        { text: "特に気にならず、自然に立ち上がれる", score: 3 },
+        { text: "少し体を前へ傾ければ立ち上がれる", score: 2 },
+        { text: "手や膝に力をかけると立ち上がれる", score: 1 },
+        { text: "姿勢を何度か変えたり、勢いをつけて立ち上がることがある", score: 0 }
+      ] },
+    { text: "鏡の前などで、力を抜いてまっすぐ立ったときはどのような状態ですか？",
+      indicators: ["abdomen", "pelvis"],
+      options: [
+        { text: "腰や肩に力を入れすぎず、楽に立っていられる", score: 3 },
+        { text: "少し意識すれば、まっすぐな姿勢を保てる", score: 2 },
+        { text: "腰を反らす、背中を丸める、片側へ体重をかける姿勢が楽に感じる", score: 1 },
+        { text: "まっすぐ立とうとすると、腰や背中が疲れやすい", score: 0 }
+      ] },
+    { text: "お子さんを10分ほど抱っこしたときは、どのような状態ですか？",
+      indicators: ["pelvis", "carry"],
+      options: [
+        { text: "抱き方を変えながら、自分のペースで抱っこできる", score: 3 },
+        { text: "腰や肩が少し気になるが、そのまま抱っこできる", score: 2 },
+        { text: "腰を反らす、片側の腰へ乗せるなど、同じ姿勢になりやすい", score: 1 },
+        { text: "途中で座ったり、抱っこを交代しないと続けにくい", score: 0 }
+      ] },
+    { text: "買い物や移動などで10分ほど歩いたときは、どのような状態ですか？",
+      indicators: ["hip", "walk"],
+      options: [
+        { text: "自分のペースでそのまま歩ける", score: 3 },
+        { text: "少しペースを落とせば歩ける", score: 2 },
+        { text: "脚や腰が重くなり、途中で一度休みたくなる", score: 1 },
+        { text: "10分ほど歩く場面を避けることがある", score: 0 }
+      ] },
+    { text: "階段を1階分上るときは、どのような状態ですか？",
+      indicators: ["hip", "walk"],
+      options: [
+        { text: "自分のペースで上れる", score: 3 },
+        { text: "ゆっくりなら上れる", score: 2 },
+        { text: "手すりを使ったり、途中で一度止まりたくなる", score: 1 },
+        { text: "脚や腰の負担を考えて、階段を避けることがある", score: 0 }
+      ] },
+    { text: "授乳、スマートフォン、デスクワークなどで30分ほど座った後、立って動き始めるときはどうですか？",
+      indicators: ["abdomen", "pelvis"],
+      options: [
+        { text: "そのまま普段どおり動ける", score: 3 },
+        { text: "少し体を動かしてからなら歩ける", score: 2 },
+        { text: "腰や骨盤まわりを伸ばしてから動き始めている", score: 1 },
+        { text: "立ち上がってから動き始めるまでに時間が必要", score: 0 }
+      ] },
+    { text: "料理や洗濯などで15分ほど立っているときは、どのような状態ですか？",
+      indicators: ["hip", "carry"],
+      options: [
+        { text: "自分のペースで続けられる", score: 3 },
+        { text: "脚や腰が少し気になるが続けられる", score: 2 },
+        { text: "途中で一度座ると楽になる", score: 1 },
+        { text: "何度か座ったり、作業を分けて行っている", score: 0 }
+      ] },
+    { text: "床にある物を拾う、お子さんのお世話でしゃがむなど、低い位置での動作はどうですか？",
+      indicators: ["carry", "daily"],
+      options: [
+        { text: "特に気にならず、しゃがんで立ち上がれる", score: 3 },
+        { text: "ゆっくりなら動作できる", score: 2 },
+        { text: "家具や床へ手をつくと動作しやすい", score: 1 },
+        { text: "低い位置での動作を避けたり、家族へ頼むことがある", score: 0 }
+      ] },
+    { text: "直近7日間で、抱っこや家事の後に疲れが強くなり、姿勢を保ちにくいと感じた日は何日ありましたか？",
+      indicators: ["carry", "rest"],
+      options: [
+        { text: "0～1日", score: 3 },
+        { text: "2～3日", score: 2 },
+        { text: "4～5日", score: 1 },
+        { text: "6～7日", score: 0 }
+      ] },
+    { text: "直近7日間で、朝起きたときに「少し休めた」と感じられた日は何日ありましたか？",
+      indicators: ["rest", "daily"],
+      options: [
+        { text: "6～7日", score: 3 },
+        { text: "4～5日", score: 2 },
+        { text: "2～3日", score: 1 },
+        { text: "0～1日", score: 0 }
+      ] },
+    { text: "直近7日間で、入浴、着替え、休憩など、自分の体を整えるための時間を10分ほど取れた日は何日ありましたか？",
+      indicators: ["rest", "daily"],
+      options: [
+        { text: "6～7日", score: 3 },
+        { text: "4～5日", score: 2 },
+        { text: "2～3日", score: 1 },
+        { text: "0～1日", score: 0 }
+      ] }
+  ],
+
+  resultTypes: [
+    { min: 80, max: 100, name: "比較的安定タイプ",
+      meaning: "現在は日常動作や姿勢への影響が比較的少なく、体型を見直すための土台を保ちやすい状態です。",
+      note: "選択した悩みや低い指標には、部分的な使いにくさや負担が表れている可能性があります。" },
+    { min: 60, max: 79, name: "部分的なバランス低下タイプ",
+      meaning: "特定の動作、姿勢、育児場面で負担を感じやすい状態です。",
+      note: "体型の変化が、体重だけではなく姿勢や日常動作とも関係している可能性があります。今のうちに状態を確認することで、体型を見直す方向性を整理しやすくなります。" },
+    { min: 40, max: 59, name: "負担が重なりやすいタイプ",
+      meaning: "起き上がり、抱っこ、立ち仕事、歩行など複数の場面で負担が重なりやすい状態です。",
+      note: "体型だけを変えようとする前に、現在の姿勢や体の使い方を確認することをおすすめします。一人で食事制限や運動方法を決めないようにしましょう。" },
+    { min: 0, max: 39, name: "回復・土台づくり優先タイプ",
+      meaning: "日常動作や育児動作へ影響する回答が複数見られる状態です。",
+      note: "体型改善を急ぐよりも、まずは現在の体調と日常動作の負担を確認することを優先しましょう。症状が強い場合や続く場合は、出産した医療機関・産婦人科・医療機関へご相談ください。" }
+  ],
+
+  indicatorMessages: {
+    abdomen: {
+      trend: "起き上がりや立った姿勢、長く座った後などに、お腹まわりで体を支えにくく、腕や腰へ負担が集まりやすい傾向が見られました。",
+      continued: "抱っこや立ち仕事で腰を反らす姿勢が続き、お腹まわりの見え方や姿勢が、今より気になりやすくなる可能性があります。",
+      improved: "起き上がりや立った姿勢での体の使い方を確認でき、抱っこや家事を今より安定して行いやすくなる可能性があります。"
+    },
+    pelvis: {
+      trend: "立った姿勢、椅子からの立ち上がり、抱っこなどで、腰を反らす、背中を丸める、片側へ体重をかける姿勢になりやすい傾向が見られました。",
+      continued: "抱っこや立ち仕事のたびに同じ側へ体重をかける場面が増え、姿勢や骨盤まわりの見え方が、さらに気になりやすくなる可能性があります。",
+      improved: "立ち方や重心のかけ方を確認でき、育児中も今より自分に合った姿勢を取りやすくなる可能性があります。"
+    },
+    hip: {
+      trend: "椅子からの立ち上がり、歩行、階段、立ったままの家事などで、お尻や脚を使いにくく感じやすい傾向が見られました。",
+      continued: "腰や太ももの前側へ負担が集まり、夕方になると下半身の重さや体型の変化が気になりやすくなる可能性があります。",
+      improved: "立ち上がりや階段での体の使い方を確認でき、日常生活でお尻や脚を今より使いやすくなる可能性があります。"
+    },
+    walk: {
+      trend: "歩行や階段などで、脚や腰の負担を感じやすく、長く移動すると自分のペースを保ちにくい傾向が見られました。",
+      continued: "買い物やお子さんとの外出で休む回数が増え、歩く場面を避けたくなる可能性があります。",
+      improved: "立ち方や歩き方の傾向を確認でき、買い物や外出を今より自分のペースで続けやすくなる可能性があります。"
+    },
+    carry: {
+      trend: "抱っこ、料理、洗濯、お子さんのお世話など、同じ姿勢が続く場面で負担を感じやすい傾向が見られました。",
+      continued: "抱っこや家事のたびに腰を反らす、片側へ体重をかけるなど、同じ姿勢が続きやすくなる可能性があります。",
+      improved: "育児や家事の中で負担が表れやすい動作を確認でき、今より落ち着いて動作を続けやすくなる可能性があります。"
+    },
+    rest: {
+      trend: "睡眠や休息の時間が十分に取りにくく、疲労が残った状態で抱っこや家事を行う日が多い傾向が見られました。",
+      continued: "疲れによって姿勢を保ちにくい時間が増え、体型を見直すための行動を始めても続けにくくなる可能性があります。",
+      improved: "現在の生活リズムに合った進め方を整理でき、無理のない範囲で体の状態を見直しやすくなる可能性があります。"
+    },
+    daily: {
+      trend: "体型や体の負担によって、服選び、外出、家事、自分のための時間などに影響が表れやすい傾向が見られました。",
+      continued: "体型が気になることで服装や外出の選択肢が狭くなり、自分のことを後回しにする場面が増える可能性があります。",
+      improved: "今の生活の中で何から確認すればよいかを整理でき、体調に合わせながら体型を見直す計画を立てやすくなる可能性があります。"
+    }
+  },
+
+  doctorCommentTemplate: "産後の体型変化は、同じ場所が気になっていても、出産からの経過、普段の姿勢、抱っこや家事の量、休息の取りやすさによって異なります。今回の回答では『{{indicator}}』に関係する場面で、負担が表れやすい傾向が見られました。{{concernPart}}体重や見た目だけで判断したり、無理に運動や食事制限を始めたりするのではなく、まずは現在の体の状態を確認し、生活に合った方法を一緒に考えていきましょう。",
+  doctorCommentUrgentAddendum: "症状が強い場合や続く場合は、まず出産した医療機関・産婦人科にご相談のうえで、姿勢や日常動作の負担について当院でも一緒に考えさせてください。",
+
+  postpartumTreatmentNote: "当院での産後施術は、出産後の経過や1か月健診の内容、医師からの指示などを確認し、現在の状態に合わせてご案内しています。",
+  postpartumEarlyNote: "産後早期は、体型を戻すことよりも体の回復が優先される時期です。体調について気になることがある場合は、まず出産した医療機関・産婦人科へご相談ください。医師から安静や運動、外出などについて指示を受けている場合は、その指示を優先してください。",
+
+  disclaimer: "本診断は医学的な診断や、体重・体脂肪率・筋肉量・骨盤の状態を測定するものではなく、産後の体型変化と日常生活での体の使い方を振り返るためのものです。出血の急な増加、発熱、強い腹痛、胸の痛み、息苦しさ、片脚の強い腫れや痛み、強い頭痛などがある場合は、出産した医療機関・産婦人科・医療機関へご連絡ください。症状が強い場合や続く場合も、医療機関へご相談ください。"
+};
+
+(function(){
+
+const state = {
+  concerns: [],
+  months: APP_DATA.profileStep.defaultValue,
+  answers: new Array(APP_DATA.questions.length).fill(null),
+  currentQ: 0
+};
+
+let lastResult = null;
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(function(el){ el.classList.remove("active"); });
+  document.getElementById(id).classList.add("active");
+  document.getElementById("lineSticky").classList.toggle("active", id === "screen-result");
+  window.scrollTo(0,0);
+}
+
+/* ---------------- init static text from APP_DATA / CLINIC_CONFIG ---------------- */
+function initStaticText(){
+  const u = APP_DATA.urgentCheck;
+  document.getElementById("urgentBadge").textContent = u.badge;
+  document.getElementById("urgentTitle").textContent = u.title;
+  document.getElementById("urgentIntro").textContent = u.intro;
+  const itemsWrap = document.getElementById("urgentItems");
+  itemsWrap.innerHTML = "";
+  u.items.forEach(function(t){
+    const li = document.createElement("li");
+    li.textContent = t;
+    itemsWrap.appendChild(li);
+  });
+  document.getElementById("urgentSafeBtn").textContent = u.safeButton;
+  document.getElementById("urgentConcernBtn").textContent = u.concernButton;
+  document.getElementById("urgentStopMsg").textContent = u.stopMessage;
+
+  document.getElementById("startBadge").textContent = APP_DATA.appTitle;
+  document.getElementById("startTitle").textContent = APP_DATA.appTitle;
+  document.getElementById("startSubtitle").textContent = APP_DATA.appSubtitle;
+
+  if(CLINIC_CONFIG.clinicIntroduction){
+    const intro = document.getElementById("clinicIntro");
+    intro.textContent = CLINIC_CONFIG.clinicIntroduction;
+    intro.style.display = "block";
+  }
+
+  document.getElementById("profileQuestion").textContent = APP_DATA.profileStep.question;
+
+  const printHeader = document.getElementById("printHeader");
+  printHeader.innerHTML = '<span class="ph-name"></span><span class="ph-phone"></span>';
+  printHeader.querySelector(".ph-name").textContent = CLINIC_CONFIG.clinicName;
+  printHeader.querySelector(".ph-phone").textContent = CLINIC_CONFIG.phone ? ("TEL " + CLINIC_CONFIG.phone) : "";
+
+  document.getElementById("resDisclaimer").textContent = APP_DATA.disclaimer;
+  document.getElementById("treatmentNote").textContent = APP_DATA.postpartumTreatmentNote;
+  document.getElementById("earlyNoteText").textContent = APP_DATA.postpartumEarlyNote;
+  document.getElementById("lineBtn").textContent = "診断結果をLINEで相談する";
+}
+
+/* ---------------- STEP1: concerns ---------------- */
+function buildConcernGrid(){
+  const grid = document.getElementById("concernGrid");
+  grid.innerHTML = "";
+  APP_DATA.concerns.forEach(function(label, idx){
+    const item = document.createElement("div");
+    item.className = "concern-item";
+    item.dataset.idx = idx;
+    item.innerHTML = '<div class="check"></div><span class="label"></span>';
+    item.querySelector(".label").textContent = label;
+    item.addEventListener("click", function(){ toggleConcern(idx); });
+    grid.appendChild(item);
+  });
+  refreshConcernUI();
+}
+
+function toggleConcern(idx){
+  const pos = state.concerns.indexOf(idx);
+  const msgEl = document.getElementById("limitMsg");
+  if(pos >= 0){
+    state.concerns.splice(pos,1);
+    msgEl.textContent = "";
+  } else {
+    if(state.concerns.length >= 3){
+      msgEl.textContent = "選べるのは3つまでです";
+      return;
+    }
+    state.concerns.push(idx);
+    msgEl.textContent = "";
+  }
+  refreshConcernUI();
+}
+
+function refreshConcernUI(){
+  document.querySelectorAll(".concern-item").forEach(function(el){
+    const idx = parseInt(el.dataset.idx,10);
+    const selected = state.concerns.indexOf(idx) >= 0;
+    el.classList.toggle("selected", selected);
+    el.classList.toggle("disabled", !selected && state.concerns.length >= 3);
+    el.querySelector(".check").textContent = selected ? "✓" : "";
+  });
+  document.getElementById("concernCount").textContent = "選択中：" + state.concerns.length + " / 3";
+  document.getElementById("concernsNextBtn").disabled = state.concerns.length === 0;
+}
+
+/* ---------------- STEP2: months since childbirth ---------------- */
+function buildQuickGrid(){
+  const grid = document.getElementById("quickGrid");
+  grid.innerHTML = "";
+  APP_DATA.profileStep.quick.forEach(function(q){
+    const btn = document.createElement("button");
+    btn.className = "quick-btn";
+    btn.textContent = q.label;
+    btn.addEventListener("click", function(){
+      state.months = q.value;
+      refreshWeekUI();
+    });
+    grid.appendChild(btn);
+  });
+  refreshWeekUI();
+}
+
+function monthsShortText(){
+  if(state.months <= 0) return "1か月未満";
+  if(state.months >= APP_DATA.profileStep.max) return "5年以上";
+  return state.months + "か月";
+}
+
+function refreshWeekUI(){
+  const p = APP_DATA.profileStep;
+  if(state.months <= 0 || state.months >= p.max){
+    document.getElementById("weekValue").textContent = monthsShortText();
+  } else {
+    document.getElementById("weekValue").innerHTML = state.months + "<span>" + p.unit + "</span>";
+  }
+  document.querySelectorAll(".quick-btn").forEach(function(btn, i){
+    const q = p.quick[i];
+    btn.classList.toggle("active", state.months === q.value);
+  });
+}
+
+function weekStep(delta){
+  const p = APP_DATA.profileStep;
+  state.months = Math.max(p.min, Math.min(p.max, state.months + delta));
+  refreshWeekUI();
+}
+
+/* ---------------- STEP3: questions ---------------- */
+function renderQuestion(){
+  const q = APP_DATA.questions[state.currentQ];
+  const total = APP_DATA.questions.length;
+  document.getElementById("qProgressLabel").textContent = "Q" + (state.currentQ+1) + " / " + total;
+  document.getElementById("qProgressFill").style.width = ((state.currentQ+1)/total*100) + "%";
+  document.getElementById("qText").textContent = q.text;
+  const wrap = document.getElementById("qChoices");
+  wrap.innerHTML = "";
+  q.options.forEach(function(opt, i){
+    const btn = document.createElement("button");
+    btn.className = "choice-item";
+    if(state.answers[state.currentQ] === i){ btn.classList.add("selected"); }
+    btn.textContent = opt.text;
+    btn.addEventListener("click", function(){ selectChoice(i); });
+    wrap.appendChild(btn);
+  });
+}
+
+function selectChoice(i){
+  state.answers[state.currentQ] = i;
+  renderQuestion();
+  setTimeout(function(){
+    if(state.currentQ < APP_DATA.questions.length - 1){
+      state.currentQ++;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }, 220);
+}
+
+function prevQuestion(){
+  if(state.currentQ > 0){
+    state.currentQ--;
+    renderQuestion();
+    showScreen("screen-question");
+  } else {
+    showScreen("screen-profile");
+  }
+}
+
+/* ---------------- scoring ---------------- */
+function computeResult(){
+  const questions = APP_DATA.questions;
+  let total = 0;
+  const max = questions.length * 3;
+  const indScore = {}, indMax = {};
+  APP_DATA.indicators.forEach(function(ind){ indScore[ind.id] = 0; indMax[ind.id] = 0; });
+
+  questions.forEach(function(q, i){
+    const ansIdx = state.answers[i];
+    const pts = ansIdx === null ? 0 : q.options[ansIdx].score;
+    total += pts;
+    q.indicators.forEach(function(id){
+      indScore[id] += pts;
+      indMax[id] += 3;
+    });
+  });
+
+  const percent = Math.round(total / max * 100);
+  const indPercent = {};
+  APP_DATA.indicators.forEach(function(ind){
+    indPercent[ind.id] = indMax[ind.id] > 0 ? Math.round(indScore[ind.id] / indMax[ind.id] * 100) : 0;
+  });
+
+  let type = APP_DATA.resultTypes[APP_DATA.resultTypes.length - 1];
+  for(let i=0;i<APP_DATA.resultTypes.length;i++){
+    if(percent >= APP_DATA.resultTypes[i].min){ type = APP_DATA.resultTypes[i]; break; }
+  }
+
+  let minVal = 100;
+  APP_DATA.indicators.forEach(function(ind){ if(indPercent[ind.id] < minVal) minVal = indPercent[ind.id]; });
+  const weakIds = APP_DATA.indicators.filter(function(ind){ return indPercent[ind.id] === minVal; }).map(function(ind){ return ind.id; }).slice(0,2);
+
+  return { percent: percent, indPercent: indPercent, type: type, weakIds: weakIds };
+}
+
+function indicatorById(id){
+  return APP_DATA.indicators.find(function(ind){ return ind.id === id; });
+}
+
+/* ---------------- radar chart ---------------- */
+function buildRadar(indPercent){
+  const svg = document.getElementById("radarSvg");
+  const ns = "http://www.w3.org/2000/svg";
+  const cx = 200, cy = 205, rMax = 90, labelR = 130;
+  const inds = APP_DATA.indicators;
+  const n = inds.length;
+  const angleFor = function(i){ return -90 + i*(360/n); };
+  const pt = function(i, r){
+    const a = angleFor(i) * Math.PI/180;
+    return { x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) };
+  };
+
+  let markup = "";
+
+  [0.25,0.5,0.75,1].forEach(function(f){
+    const pts = [];
+    for(let i=0;i<n;i++){ const p = pt(i, rMax*f); pts.push(p.x+","+p.y); }
+    markup += '<polygon points="'+pts.join(" ")+'" fill="none" stroke="#e6dccf" stroke-width="1"/>';
+  });
+
+  for(let i=0;i<n;i++){
+    const p = pt(i, rMax);
+    markup += '<line x1="'+cx+'" y1="'+cy+'" x2="'+p.x+'" y2="'+p.y+'" stroke="#e6dccf" stroke-width="1"/>';
+  }
+
+  const dataPts = [];
+  for(let i=0;i<n;i++){
+    const val = Math.max(0, Math.min(100, indPercent[inds[i].id])) / 100;
+    const p = pt(i, rMax*val);
+    dataPts.push(p.x+","+p.y);
+  }
+  markup += '<polygon points="'+dataPts.join(" ")+'" fill="rgba(227,167,174,0.32)" stroke="#c9808a" stroke-width="2"/>';
+
+  for(let i=0;i<n;i++){
+    const val = Math.max(0, Math.min(100, indPercent[inds[i].id])) / 100;
+    const p = pt(i, rMax*val);
+    markup += '<circle cx="'+p.x+'" cy="'+p.y+'" r="3.5" fill="#c9808a"/>';
+  }
+
+  for(let i=0;i<n;i++){
+    const a = angleFor(i) * Math.PI/180;
+    const cos = Math.cos(a);
+    const lp = pt(i, labelR);
+    let anchor = "middle";
+    if(cos > 0.35) anchor = "start";
+    else if(cos < -0.35) anchor = "end";
+
+    markup += '<text x="'+lp.x+'" y="'+lp.y+'" text-anchor="'+anchor+'" font-size="12.5" font-weight="700" fill="#4a3a32">';
+    markup += '<tspan x="'+lp.x+'" dy="0">'+escapeXml(inds[i].shortName)+'</tspan>';
+    markup += '<tspan x="'+lp.x+'" dy="16" font-size="12" font-weight="600" fill="#c9808a">'+indPercent[inds[i].id]+'点</tspan>';
+    markup += '</text>';
+  }
+
+  svg.innerHTML = markup;
+}
+
+function escapeXml(str){
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function buildBarList(indPercent){
+  const wrap = document.getElementById("barList");
+  wrap.innerHTML = "";
+  APP_DATA.indicators.forEach(function(ind){
+    const val = indPercent[ind.id];
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML =
+      '<div class="bar-label"></div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:'+val+'%"></div></div>' +
+      '<div class="bar-num">'+val+'</div>';
+    row.querySelector(".bar-label").textContent = ind.fullName;
+    wrap.appendChild(row);
+  });
+}
+
+/* ---------------- result rendering ---------------- */
+function selectedConcernLabels(){
+  return state.concerns.map(function(i){ return APP_DATA.concerns[i]; });
+}
+
+function showResult(){
+  const r = computeResult();
+  lastResult = r;
+
+  const concernLabels = selectedConcernLabels();
+  const weakInd = indicatorById(r.weakIds[0]);
+  const weakNames = r.weakIds.map(function(id){ return indicatorById(id).fullName; });
+
+  document.getElementById("resTypeName").textContent = r.type.name;
+  document.getElementById("resScoreNum").textContent = r.percent;
+  document.getElementById("resScoreLabel").textContent = APP_DATA.scoreLabel + "（100点満点）";
+  document.getElementById("resScoreMeaning").textContent = r.type.meaning + " " + r.type.note;
+  document.getElementById("resMetaConcerns").textContent = "選択した悩み：" + (concernLabels.join("、") || "特になし");
+  document.getElementById("resMetaMonths").textContent = "産後経過：" + monthsShortText();
+
+  const earlyBox = document.getElementById("earlyNoteBox");
+  earlyBox.style.display = state.months <= 0 ? "block" : "none";
+
+  const msgs = APP_DATA.indicatorMessages[weakInd.id];
+  document.getElementById("resTrend").textContent =
+    "回答からは、" + msgs.trend + "（特に負担が表れやすい項目：" + weakNames.join("・") + "）";
+  document.getElementById("futureNow").textContent = msgs.continued;
+  document.getElementById("futureBetter").textContent = msgs.improved;
+
+  buildRadar(r.indPercent);
+  buildBarList(r.indPercent);
+  document.getElementById("weakNote").textContent = "今、特に負担が表れやすい項目：" + weakNames.join("・");
+
+  document.getElementById("resSenseiName").textContent = CLINIC_CONFIG.advisorTitle + " " + CLINIC_CONFIG.advisorName;
+  document.getElementById("resAdvice").textContent = buildDoctorComment(r, concernLabels, weakInd);
+
+  showScreen("screen-result");
+}
+
+function buildDoctorComment(r, concernLabels, weakInd){
+  let concernPart = "";
+  if(concernLabels.length > 0){
+    concernPart = "とくに『" + concernLabels[0] + "』が気になっているとのことですので、";
+  }
+  let comment = APP_DATA.doctorCommentTemplate
+    .replace("{{indicator}}", weakInd.fullName)
+    .replace("{{concernPart}}", concernPart);
+  if(r.type.min === 0){
+    comment += " " + APP_DATA.doctorCommentUrgentAddendum;
+  }
+  return comment;
+}
+
+/* ---------------- copy / print / LINE ---------------- */
+function buildCopyText(){
+  const r = lastResult || computeResult();
+  const concernLabels = selectedConcernLabels();
+  const weakNames = r.weakIds.map(function(id){ return indicatorById(id).fullName; });
+  const lines = [];
+  lines.push("【" + APP_DATA.appTitle + "】");
+  lines.push(CLINIC_CONFIG.clinicName);
+  lines.push("");
+  lines.push("■選択した悩み");
+  lines.push(concernLabels.join("、") || "特になし");
+  lines.push("");
+  lines.push("■基本情報");
+  lines.push("産後経過：" + monthsShortText());
+  lines.push("");
+  lines.push("■診断結果");
+  lines.push("診断タイプ：" + r.type.name);
+  lines.push(APP_DATA.scoreLabel + "：" + r.percent + "点（100点満点）");
+  lines.push("");
+  lines.push("■7つの指標");
+  APP_DATA.indicators.forEach(function(ind){
+    lines.push("・" + ind.fullName + "：" + r.indPercent[ind.id] + "点");
+  });
+  lines.push("");
+  lines.push("特に負担が表れやすい項目：" + weakNames.join("・"));
+  lines.push("");
+  lines.push("■" + CLINIC_CONFIG.advisorTitle + " " + CLINIC_CONFIG.advisorName + "より");
+  lines.push(document.getElementById("resAdvice").textContent);
+  lines.push("");
+  lines.push("※本診断は医学的な診断ではありません。" + APP_DATA.disclaimer);
+  return lines.join("\n");
+}
+
+function buildLineMessage(){
+  const r = lastResult || computeResult();
+  const concernLabels = selectedConcernLabels();
+  const weakNames = r.weakIds.map(function(id){ return indicatorById(id).fullName; });
+  const lines = [];
+  lines.push("【" + APP_DATA.appTitle + "の結果】");
+  lines.push("");
+  lines.push("産後経過：" + monthsShortText());
+  lines.push("気になる悩み：" + (concernLabels.join("、") || "特になし"));
+  lines.push("診断タイプ：" + r.type.name);
+  lines.push("体型バランススコア：" + r.percent + "点");
+  lines.push("特に見直したい項目：" + weakNames.join("・"));
+  lines.push("");
+  lines.push("診断結果について相談したいです。");
+  return lines.join("\n");
+}
+
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 1800);
+}
+
+function copyToClipboard(text){
+  return new Promise(function(resolve){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ resolve(true); }, function(){ resolve(fallbackCopy(text)); });
+    } else {
+      resolve(fallbackCopy(text));
+    }
+  });
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  let ok = false;
+  try{ ok = document.execCommand("copy"); } catch(e){ ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function copyResult(){
+  copyToClipboard(buildCopyText()).then(function(ok){
+    showToast(ok ? "診断結果をコピーしました" : "コピーできませんでした");
+  });
+}
+
+function openLine(){
+  const message = buildLineMessage();
+  copyToClipboard(message).then(function(){
+    let url = "";
+    if(CLINIC_CONFIG.lineOfficialAccountId){
+      url = "https://line.me/R/oaMessage/" + encodeURIComponent(CLINIC_CONFIG.lineOfficialAccountId) + "/?" + encodeURIComponent(message);
+    } else if(CLINIC_CONFIG.lineAddFriendUrl){
+      url = CLINIC_CONFIG.lineAddFriendUrl;
+    }
+    if(url){
+      window.open(url, "_blank");
+    } else {
+      showToast("LINEのURLがまだ設定されていません");
+    }
+  });
+}
+
+function restart(){
+  state.concerns = [];
+  state.months = APP_DATA.profileStep.defaultValue;
+  state.answers = new Array(APP_DATA.questions.length).fill(null);
+  state.currentQ = 0;
+  document.getElementById("limitMsg").textContent = "";
+  refreshConcernUI();
+  refreshWeekUI();
+  showScreen("screen-urgent");
+}
+
+/* ---------------- wire up events ---------------- */
+function bindEvents(){
+  document.getElementById("urgentSafeBtn").addEventListener("click", function(){ showScreen("screen-start"); });
+  document.getElementById("urgentConcernBtn").addEventListener("click", function(){ showScreen("screen-urgent-stop"); });
+  document.getElementById("urgentBackBtn").addEventListener("click", function(){ showScreen("screen-urgent"); });
+
+  document.getElementById("startBeginBtn").addEventListener("click", function(){ showScreen("screen-concerns"); });
+
+  document.getElementById("concernsNextBtn").addEventListener("click", function(){ showScreen("screen-profile"); });
+  document.getElementById("concernsBackBtn").addEventListener("click", function(){ showScreen("screen-start"); });
+
+  document.getElementById("weekMinusBtn").addEventListener("click", function(){ weekStep(-1); });
+  document.getElementById("weekPlusBtn").addEventListener("click", function(){ weekStep(1); });
+  document.getElementById("profileNextBtn").addEventListener("click", function(){
+    state.currentQ = state.currentQ || 0;
+    renderQuestion();
+    showScreen("screen-question");
+  });
+  document.getElementById("profileBackBtn").addEventListener("click", function(){ showScreen("screen-concerns"); });
+
+  document.getElementById("qBackBtn").addEventListener("click", prevQuestion);
+
+  document.getElementById("copyBtn").addEventListener("click", copyResult);
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+  document.getElementById("lineBtn").addEventListener("click", openLine);
+  document.getElementById("restartBtn").addEventListener("click", restart);
+}
+
+/* ---------------- init ---------------- */
+initStaticText();
+buildConcernGrid();
+buildQuickGrid();
+bindEvents();
+showScreen("screen-urgent");
+
+})();
+</script>
+</body>
+</html>
